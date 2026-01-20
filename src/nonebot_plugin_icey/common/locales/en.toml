@@ -1,0 +1,72 @@
+welcome_on = "✅ Welcome message has been enabled"
+welcome_off = "✅ Welcome message has been disabled"
+goodbye_on = "✅ Leave notification has been enabled"
+goodbye_off = "✅ Leave notification has been disabled"
+level_checker_on = "✅ Join level check has been enabled"
+level_checker_off = "✅ Join level check has been disabled"
+
+
+verify_on = "🛡️ Join verification has been enabled (Default mode: Math question)"
+verify_off = "🛡️ Join verification has been disabled"
+set_verify_time = "✅ Verification timeout has been set to {time} seconds"
+
+set_lang = "✅ Group language has been set to: English (en)"
+set_autodel = "✅ Auto-delete time has been set to {time} seconds"
+set_autodel_off = "✅ Auto-delete has been disabled"
+
+# Note: Placeholders in TOML are compatible with Python format()
+verify_start = """{at_user} Welcome!
+🛡️ This group has join verification enabled.
+Please answer the question below within {timeout} seconds, or you will be removed from the group.
+
+Question: {question}
+(Remaining attempts: {attempts}. Please reply directly in the group.)"""
+
+verify_timeout = "{at_user} Verification timed out. Goodbye 👋"
+verify_pass = "{at_user} ✅ Verification passed!"
+verify_fail_retry = "{at_user} ❌ Incorrect answer. Please try again. (Remaining attempts: {remaining})"
+verify_fail_kick = "{at_user} ❌ Too many incorrect attempts. Goodbye."
+
+err_time_format = "❌ Please enter a valid time in seconds"
+err_no_content = "Please provide message content!"
+
+
+# Multi-line string example
+welcome_status = """📢 Welcome Settings (Lang: {lang})
+━━━━━━━━━━━━━━
+Welcome message: {wel_status}
+Leave notification: {bye_status}
+Auto-delete: {autodel}
+━━━━━━━━━━━━━━
+Welcome message:
+{wel_msg}
+━━━━━━━━━━━━━━
+Leave message:
+{bye_msg}"""
+
+
+set_qq_level = "✅ Required join level has been set to {check_level}"
+qq_level_check = "{at_user} ❌ Your QQ level does not meet the requirement. Current level: {qq_level}, Required level: {check_level}"
+
+verify_status = """🛡️ Join Verification Settings (Lang: {lang})
+━━━━━━━━━━━━━━
+Level check: {set_level_check}
+Required join level: {level}
+Verification: {ver_status}
+Timeout: {timeout} seconds
+Max attempts: {attempts}
+Verification mode: {mode}"""
+
+# Help command
+help_title = "🤖 IceyGroupManager Available Commands:"
+help_welcome_section = "🎉 Welcome Module:"
+help_verify_section = "🔒 Verification Module:"
+help_common_section = "🌐 Common Module:"
+help_other_section = "🔧 Other Commands:"
+help_tip = "💡 Tip: Use /help <command_name> to view specific command details"
+help_no_commands = "No commands available at the moment"
+help_cmd_not_found = "Command not found: {cmd}"
+help_cmd_format = "  /{cmd_name} - {usage}"
+help_specific_cmd = "Command: /{cmd}\nDescription: {desc}"
+
+
