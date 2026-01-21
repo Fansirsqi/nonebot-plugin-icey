@@ -81,7 +81,7 @@ def get_all_commands() -> Dict[str, Any]:
         commands["goodbye"] = {"matcher": cmd_goodbye, "description": "退群通知功能开关，用法: /goodbye [on/off]"}
         commands["setwelcome"] = {"matcher": cmd_set_welcome, "description": "设置欢迎消息，用法: /setwelcome <消息内容>"}
         commands["setgoodbye"] = {"matcher": cmd_set_goodbye, "description": "设置退群消息，用法: /setgoodbye <消息内容>"}
-        commands["setautodel"] = {"matcher": cmd_cleanwelcome, "description": "设置自动删除时间，用法: /setautodel <秒数>"}
+        commands["cleanwelcometime"] = {"matcher": cmd_cleanwelcome, "description": "设置自动删除时间，用法: /cleanwelcometime <秒数>"}
         commands["resetwelcome"] = {"matcher": cmd_reset_welcome, "description": "重置欢迎消息为默认值，用法: /resetwelcome"}
         commands["resetgoodbye"] = {"matcher": cmd_reset_goodbye, "description": "重置退群消息为默认值，用法: /resetgoodbye"}
     except ImportError:
