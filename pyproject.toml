@@ -130,3 +130,41 @@ typeCheckingMode = "standard"
 
 # 或者仅针对特定文件
 "./src/nonebot_plugin_icey/__init__.py" = ["E402"]
+
+
+[tool.bumpversion]
+current_version = "0.1.0"
+commit = true
+message = "release: bump version from {current_version} to {new_version}"
+tag = true
+
+# 配置 1: 更新 pyproject.toml 里的版本号
+[[tool.bumpversion.files]]
+filename = "pyproject.toml"
+# 这里的搜索字符串确保只修改项目本身的版本，而不是依赖项的版本
+search = "name = \"nonebot-plugin-icey\"\nversion = \"{current_version}\""
+replace = "name = \"nonebot-plugin-icey\"\nversion = \"{new_version}\""
+
+# 配置 2: (可选) 如果你的 __init__.py 里也有版本号，取消下面的注释并修改路径
+[[tool.bumpversion.files]]
+filename = "src/nonebot_plugin_icey/__init__.py"
+search = "__version__ = \"{current_version}\""
+replace = "__version__ = \"{new_version}\""
+
+[tool.poe.tasks]
+bump = "bump-my-version bump"
+
+
+# ❯ uv tool list
+# bump-my-version v1.2.6
+# - bump-my-version
+# nb-cli v1.6.0
+# - nb
+# pip v25.3
+# - pip
+# - pip3
+# - pip3.12
+# poethepoet v0.40.0
+# - poe
+# ruff v0.14.11
+# - ruff

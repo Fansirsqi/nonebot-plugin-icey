@@ -22,6 +22,8 @@ from .modules import welcome as welcome_module
 from .modules import filters as filters_module
 
 
+__version__ = "0.0.1"
+
 __plugin_meta__ = PluginMetadata(
     name="IceyGroupManager",
     description="Icey QQ群管助手",
