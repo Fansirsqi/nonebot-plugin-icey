@@ -10,13 +10,12 @@ from ...common.locales import LangManager
 from ...common.matcher import admin_perm
 
 
-
 # 还需要导入欢迎模块的发送消息函数（验证通过后欢迎）
 # 注意：跨模块引用
 
 # === 1. 新增导入：通用DAO和欢迎配置模型 ===
-from ...common.dao import get_sub_config 
-from ..welcome.model import WelcomeConfig 
+from ...common.dao import get_sub_config
+from ..welcome.model import WelcomeConfig
 from ..welcome.service import send_welcome_message
 
 from .service import clean_verify_msgs, del_msg, get_config, kick_user, start_verification, update_config, verifying_users
@@ -142,8 +141,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
     state.user_msg_ids.append(event.message_id)
 
     conf = await get_config(gid_str)
-    
-    
+
     # 获取欢迎配置
     wel_conf = await get_sub_config(gid_str, WelcomeConfig)
     # 获取配置的时间
@@ -154,7 +152,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
     # 所以如果为0，我们给一个默认清理时间 (例如 10秒)
     # 如果大于0，则跟欢迎消息保持一致
     wait_seconds = delay_time if delay_time > 0 else 10
-    
+
     lang = conf.group.language
     at_seg = MessageSegment.at(uid)
 
@@ -162,8 +160,6 @@ async def _(bot: Bot, event: GroupMessageEvent):
     if user_msg == state.answer:
         state.timeout_task.cancel()  # 取消倒计时
         del verifying_users[(gid_str, uid)]  # 移除状态
-        
-        
 
         # 发送通过提示
         pass_msg = LangManager.get(lang, "verify_pass", at_user=at_seg)
@@ -171,7 +167,7 @@ async def _(bot: Bot, event: GroupMessageEvent):
 
         # 验证通过后，发送欢迎消息
         # 注意：这里我们获取了 wel_msg_id，但不再立即放入清理列表
-        wel_msg_id = await send_welcome_message(bot, gid_int, uid)
+        await send_welcome_message(bot, gid_int, uid, flag="verify")
 
         # === 优化后的清理流程 ===
         # 等待一小会儿，让用户看到“验证通过”
