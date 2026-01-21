@@ -1,6 +1,6 @@
 [project]
 name = "nonebot-plugin-icey"
-version = "0.1.1"
+version = "0.1.2"
 description = "Icey QQ群管助手"
 readme = "README.md"
 requires-python = ">=3.9, <4.0"
@@ -133,7 +133,7 @@ typeCheckingMode = "standard"
 
 
 [tool.bumpversion]
-current_version = "0.1.1"
+current_version = "0.1.2"
 commit = true
 message = "release: bump version from {current_version} to {new_version}"
 tag = true

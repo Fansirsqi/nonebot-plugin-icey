@@ -22,7 +22,7 @@ from .modules import welcome as welcome_module
 from .modules import filters as filters_module
 
 
-__version__ = "0.1.1"
+__version__ = "0.1.2"
 
 __plugin_meta__ = PluginMetadata(
     name="IceyGroupManager",
