@@ -4,76 +4,77 @@
 
 
 ## ✨ nonebot-plugin-icey ✨
-[![python](https://img.shields.io/badge/python-3.11|3.12|3.13-blue.svg)](https://www.python.org)
+[![python](https://img.shields.io/badge/python-3.10|3.11|3.12|3.13|3.14-blue.svg)](https://www.python.org)
 [![uv](https://img.shields.io/badge/package%20manager-uv-black?style=flat-square&logo=uv)](https://github.com/astral-sh/uv)
 <br/>
 [![ruff](https://img.shields.io/badge/code%20style-ruff-black?style=flat-square&logo=ruff)](https://github.com/astral-sh/ruff)
-[![pre-commit.ci status](https://results.pre-commit.ci/badge/github/Fansirsqi/nonebot-plugin-icey/main.svg)](https://results.pre-commit.ci/latest/github/Fansirsqi/nonebot-plugin-icey/main)
+[![pre-commit](https://results.pre-commit.ci/badge/github/fllesser/nonebot-plugin-template/master.svg)](https://results.pre-commit.ci/latest/github/fllesser/nonebot-plugin-template/master)
 
 </div>
-# Getting Started
 
-## Install Preview
+# 如何开始
+
+## 安装预览
 
 [![asciicast](https://asciinema.org/a/bqOZS0o36s8Gjjwg.svg)](https://asciinema.org/a/bqOZS0o36s8Gjjwg)
 
 ---
 
 
-## 1. Create a Bot Project
->If you already have a bot environment, you can skip this step.
+## 1. 创建一个机器人项目
+>(如果你已经有了机器人环境可以跳过此步骤)
 
-Ensure you have the `nb-cli` tool installed in your environment.
+确保环境中有`nb-cli`工具
 
-`uv tool install nb-cli`
+`uv tool install nb-cli` 
 
-(In the following CLI operations, use arrow keys to navigate, Space to select, and Enter to confirm.)
+(以下`cli`中操作方法上下选择,空格选中,回车完成)
 
-`nb init` Choose a template, enter the project name, e.g., `icey`
+`nb init` 选一个模板,输入项目名称,`icey`
 
-Adapters: `onebotv11`, `telegram`
+适配器 `onebotv11`,`telegram`
 
-Drivers: `fastapi`, `httpx`, `websockets`
+驱动器 `fastapi`,`httpx`,`websockets`
 
-Storage Policy: `Current Project`
+存储策略 `当前项目`
 
-Do not install dependencies immediately: `n`
+不立即安装依赖`n`
 
 ```bash
-[?] Project name: icey
-[?] Which adapters to use? OneBot V11 (OneBot V11 Protocol), Telegram (Telegram Protocol)
-[?] Which drivers to use? FastAPI (FastAPI Driver), HTTPX (HTTPX Driver), websockets (websockets Driver)
-[?] What local storage policy to use? Current Project (Suitable for multi-instance/portable instance)
-[?] Install dependencies immediately? n
-Done!
-Run the following command to start your bot:
+[?] 项目名称: icey
+[?] 要使用哪些适配器? OneBot V11 (OneBot V11 协议), Telegram (Telegram 协议)
+[?] 要使用哪些驱动器? FastAPI (FastAPI 驱动器), HTTPX (HTTPX 驱动器), websockets (websockets 驱动器)
+[?] 要使用什么本地存储策略? 当前项目 (适用于多实例/便携实例)
+[?] 立即安装依赖? n
+完成!
+运行以下命令来启动你的机器人:
   cd icey
   nb run --reload
 ```
 
-Now navigate to the project directory.
+现在cd到项目目录下
 
-Synchronize NoneBot dependencies.
+同步nonebot依赖
 
 `uv sync`
 
-## 2. Add This Module's Dependencies
+## 2. 添加本模块依赖
 
-`uv add nonebot-plugin-icey` / `pip install nonebot-plugin-icey` / `pdm add nonebot-plugin-icey` / `poetry add nonebot-plugin-icey` - any one of these should work.
+`uv add nonebot-plugin-icey`/`pip install nonebot-plugin-icey`/`pdm add nonebot-plugin-icey`/`poetry add nonebot-plugin-icey` 任选一个应该就行
 
 > [!IMPORTANT]
-Please ensure to append the loading of the `nonebot-plugin-icey` plugin under the `[tool.nonebot.plugins]` section in your `pyproject.toml` file.
+请务必在`pyproject.toml`文件,在`[tool.nonebot.plugins]`追加`nonebot-plugin-icey`插件的载入
 
 ```toml
-[tool.nonebot.plugins] # Under this configuration item, if not manually added before
+[tool.nonebot.plugins] #这个配置项下,没有手动添加
 ...
-nonebot_plugin_icey = ["nonebot_plugin_icey"] # Append this line
+nonebot_plugin_icey = ["nonebot_plugin_icey"] #追加这一行
 ...
 
 ```
 
 > [!NOTE]
-The following steps need to be executed after each update/upgrade or during the first initialization.
+每次更新升级或者第一次初始化时需要执行以下步骤
 
 `nb orm revision -m "xxxx_date"`
 
@@ -83,7 +84,7 @@ The following steps need to be executed after each update/upgrade or during the 
 
 ```bash
 ➜ nb orm revision -m "2026_01_22_15_10"
-Using Python: xxxxxxxxxxxx\.venv\Scripts\python.exe
+使用 Python: xxxxxxxxxxxx\.venv\Scripts\python.exe
 01-22 15:02:03 [SUCCESS] nonebot | NoneBot is initializing...
 01-22 15:02:03 [INFO] nonebot | Current Env: prod
 01-22 15:02:04 [SUCCESS] nonebot | Succeeded to load plugin "nonebot_plugin_localstore"
@@ -95,11 +96,11 @@ Using Python: xxxxxxxxxxxx\.venv\Scripts\python.exe
 01-22 15:02:05 [SUCCESS] nonebot_plugin_icey | Succeeded to load icey plugin model "nonebot_plugin_icey.modules.verify"
 01-22 15:02:05 [SUCCESS] nonebot_plugin_icey | Succeeded to load icey plugin model "nonebot_plugin_icey.modules.filters"
 01-22 15:02:05 [SUCCESS] nonebot | Succeeded to load plugin "nonebot_plugin_icey"
-Generating xxxxxxxxxxx\tmpo10400vs\f3408d0c8073_xxxx_date.py ... done
+Generating xxxxxxxxxxx\tmpo10400vs\f3408d0c8073_xxxx_date.py ...  done
 root in icey on master ≢  ?1
 ➜ nb run --reload
-Using Python: D:\Githubs\bot_test\icey\.venv\Scripts\python.exe
-Starting reload watcher, current process [2978456].
+使用 Python: D:\Githubs\bot_test\icey\.venv\Scripts\python.exe
+启动重载监视,当前进程 [2978456].
 01-22 15:02:12 [SUCCESS] nonebot | NoneBot is initializing...
 01-22 15:02:12 [INFO] nonebot | Current Env: prod
 01-22 15:02:13 [SUCCESS] nonebot | Succeeded to load plugin "nonebot_plugin_localstore"
@@ -115,15 +116,15 @@ Starting reload watcher, current process [2978456].
 01-22 15:02:13 [SUCCESS] nonebot | Loaded adapters: OneBot V11, Telegram
 01-22 15:02:13 [INFO] uvicorn | Started server process [2977836]
 01-22 15:02:13 [INFO] uvicorn | Waiting for application startup.
-Target database is not up to date with the latest migration, update? [y/N]: y
+目标数据库未更新到最新迁移, 是否更新? [y/N]: y
 01-22 15:02:16 [INFO] uvicorn | Application startup complete.
 01-22 15:02:16 [INFO] uvicorn | Uvicorn running on http://127.0.0.1:8080 (Press CTRL+C to quit)
-Watchfiles detected changes in "data\nonebot_plugin_orm\migrations\f3408d0c8073_xxxx_date.py". Reloading...
+Watchfiles 在 "data\nonebot_plugin_orm\migrations\f3408d0c8073_xxxx_date.py" 中发现变化. 正在重新加载...
 01-22 15:02:16 [INFO] uvicorn | Shutting down
 01-22 15:02:16 [INFO] uvicorn | Waiting for application shutdown.
 01-22 15:02:16 [INFO] uvicorn | Application shutdown complete.
 01-22 15:02:16 [INFO] uvicorn | Finished server process [2977836]
-Restarting process [2974968].
+重启进程 [2974968].
 01-22 15:02:17 [SUCCESS] nonebot | NoneBot is initializing...
 01-22 15:02:17 [INFO] nonebot | Current Env: prod
 01-22 15:02:18 [SUCCESS] nonebot | Succeeded to load plugin "nonebot_plugin_localstore"
@@ -139,13 +140,14 @@ Restarting process [2974968].
 01-22 15:02:18 [SUCCESS] nonebot | Loaded adapters: OneBot V11, Telegram
 01-22 15:02:18 [INFO] uvicorn | Started server process [2978916]
 01-22 15:02:18 [INFO] uvicorn | Waiting for application startup.
-01-22 15:02:18 [INFO] nonebot_plugin_orm | No new upgrade operations detected.
+01-22 15:02:18 [INFO] nonebot_plugin_orm | 没有检测到新的升级操作
 01-22 15:02:18 [INFO] uvicorn | Application startup complete.
 01-22 15:02:18 [INFO] uvicorn | Uvicorn running on http://127.0.0.1:8080 (Press CTRL+C to quit)
 
 ```
 
-### 3. Finally, enjoy your bot!
+### 3. 最后,享受你的机器人吧～
+
+## [用法](/.docs/Usage_CN.md)
 
 
-## [Usage](/.docs/Usage.md)
