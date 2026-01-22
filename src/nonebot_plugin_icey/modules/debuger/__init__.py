@@ -1,9 +1,11 @@
 from nonebot import on_message
-from nonebot.adapters.onebot.v11 import GroupMessageEvent
 from nonebot.adapters import Bot
+from nonebot.adapters.onebot.v11 import GroupMessageEvent
 from nonebot.log import logger
 
-logger.opt(colors=True).success(f'Succeeded to load icey plugin model "<m>{__name__}</m>"')
+logger.opt(colors=True).success(
+    f'Succeeded to load icey plugin model "<m>{__name__}</m>"'
+)
 debug_msg = on_message(priority=50, block=False)
 
 

@@ -3,6 +3,7 @@ import asyncio
 
 from nonebot.adapters.onebot.v11 import Bot, MessageSegment
 from nonebot.log import logger
+
 from ...common.dao import get_sub_config, update_sub_config
 from .model import WelcomeConfig
 
@@ -63,4 +64,3 @@ async def send_goodbye_message(bot: Bot, group_id: int, user_id: int):
             await bot.delete_msg(message_id=msg_id["message_id"])
         except Exception as e:
             logger.error(f"撤回错误:{msg_id} {e}")
-            pass

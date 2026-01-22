@@ -10,7 +10,9 @@ __plugin_meta__ = PluginMetadata(
     usage="",
 )
 
-logger.opt(colors=True).success(f'Succeeded to load icey plugin model "<m>{__name__}</m>"')
+logger.opt(colors=True).success(
+    f'Succeeded to load icey plugin model "<m>{__name__}</m>"'
+)
 __all__ = [
     "on_request",
 ]

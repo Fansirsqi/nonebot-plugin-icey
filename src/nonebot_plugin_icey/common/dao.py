@@ -13,7 +13,9 @@ T = TypeVar("T", bound=BaseGroupConfig)
 async def ensure_group_exist(group_id: str) -> GroupInfo:
     """确保主表存在"""
     async with get_session() as session:
-        result = await session.execute(select(GroupInfo).where(GroupInfo.group_id == group_id))
+        result = await session.execute(
+            select(GroupInfo).where(GroupInfo.group_id == group_id)
+        )
         info = result.scalar_one_or_none()
         if not info:
             info = GroupInfo(group_id=group_id, language="zh")
@@ -23,7 +25,7 @@ async def ensure_group_exist(group_id: str) -> GroupInfo:
         return info
 
 
-async def get_sub_config(group_id: str, model_cls: Type[T]) -> T:
+async def get_sub_config(group_id: str, model_cls: type[T]) -> T:
     """
     通用获取子配置函数
     :param group_id: 群号
@@ -31,7 +33,9 @@ async def get_sub_config(group_id: str, model_cls: Type[T]) -> T:
     """
     async with get_session() as session:
         # 使用传入的类进行查询
-        result = await session.execute(select(model_cls).where(model_cls.group_id == group_id))
+        result = await session.execute(
+            select(model_cls).where(model_cls.group_id == group_id)
+        )
         conf = result.scalar_one_or_none()
 
         if not conf:
@@ -47,7 +51,7 @@ async def get_sub_config(group_id: str, model_cls: Type[T]) -> T:
         return conf
 
 
-async def update_sub_config(group_id: str, model_cls: Type[T], **kwargs) -> str:
+async def update_sub_config(group_id: str, model_cls: type[T], **kwargs) -> str:
     """
     通用更新函数
     :return: 当前群语言 (用于回复)

@@ -15,7 +15,9 @@ class WelcomeConfig(BaseGroupConfig):
     __tablename__ = "icey_welcome_config"
 
     # 关联到主表
-    group_id: Mapped[str] = mapped_column(ForeignKey("icey_group_info.group_id"), primary_key=True)
+    group_id: Mapped[str] = mapped_column(
+        ForeignKey("icey_group_info.group_id"), primary_key=True
+    )
 
     should_welcome: Mapped[bool] = mapped_column(default=False)  # 是否开启入群欢迎
     should_goodbye: Mapped[bool] = mapped_column(default=False)  # 是否开启退群通知
@@ -23,7 +25,9 @@ class WelcomeConfig(BaseGroupConfig):
     # 这样当新群加入时，会自动使用 .env 中配置的文案
     welcome_message: Mapped[str] = mapped_column(default=plugin_config.welcome_message)
     goodbye_message: Mapped[str] = mapped_column(default=plugin_config.goodbye_message)
-    auto_delete_time: Mapped[int] = mapped_column(default=plugin_config.welcome_auto_delete_time)
+    auto_delete_time: Mapped[int] = mapped_column(
+        default=plugin_config.welcome_auto_delete_time
+    )
 
     # 建立关系，方便查询
     group: Mapped[GroupInfo] = relationship(lazy="joined")

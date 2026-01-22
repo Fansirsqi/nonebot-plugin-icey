@@ -1,11 +1,13 @@
 # sesametk/plugins/icey/common/locales/__init__.py
 import sys
-from pathlib import Path
 import time
+from pathlib import Path
 from typing import Any, Dict, List
-from ...config import Config
+
 from nonebot import get_plugin_config, logger
 from nonebot.adapters.onebot.v11 import Message
+
+from ...config import Config
 
 plugin_config = get_plugin_config(Config)
 
@@ -18,7 +20,7 @@ else:
 
 class LangManager:
     # 内存缓存：{"zh": {...}, "en": {...}}
-    _data: Dict[str, Dict[str, Any]] = {}
+    _data: dict[str, dict[str, Any]] = {}
     DEFAULT_LANG = plugin_config.lang
     _last_check_time = 0
 
@@ -43,7 +45,7 @@ class LangManager:
         cls._last_load_time = time.time()
 
     @classmethod
-    def get_available_langs(cls) -> List[str]:
+    def get_available_langs(cls) -> list[str]:
         """获取当前可用的语言列表"""
         if not cls._data:
             cls.load_data()

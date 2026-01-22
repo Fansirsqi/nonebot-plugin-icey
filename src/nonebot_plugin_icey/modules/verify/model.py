@@ -7,7 +7,9 @@ from ...common.models import BaseGroupConfig, GroupInfo  # 导入主表
 class VerifyConfig(BaseGroupConfig):
     __tablename__ = "icey_verify_config"
 
-    group_id: Mapped[str] = mapped_column(ForeignKey("icey_group_info.group_id"), primary_key=True)
+    group_id: Mapped[str] = mapped_column(
+        ForeignKey("icey_group_info.group_id"), primary_key=True
+    )
 
     # 验证配置
     verify_enabled: Mapped[bool] = mapped_column(default=False)  # 是否开启入群验证
