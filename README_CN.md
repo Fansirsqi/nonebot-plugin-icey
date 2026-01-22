@@ -1,6 +1,6 @@
 <div align="center">
     <a href="https://v2.nonebot.dev/store">
-    <img src="https://ghfast.top/https://raw.githubusercontent.com/Fansirsqi/nonebot-plugin-icey/refs/heads/main/.docs/Nonebot-Plugin-Icey.svg" alt="logo"></a>
+    <img src="https://ghfast.top/https://raw.githubusercontent.com/Fansirsqi/nonebot-plugin-icey/refs/heads/main/.docs/Nonebot-Plugin-Icey.svg" width="310" alt="logo"></a>
 
 
 ## ✨ nonebot-plugin-icey ✨
