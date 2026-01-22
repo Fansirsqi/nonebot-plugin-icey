@@ -19,11 +19,11 @@ class VerifyState:
     timeout_task: asyncio.Task
     question_msg_id: int
     # 新增：记录用户发送的验证消息ID列表，使用field初始化空列表
-    user_msg_ids: List[int] = field(default_factory=list)
+    user_msg_ids: list[int] = field(default_factory=list)
 
 
 # 内存状态
-verifying_users: Dict[tuple[str, int], VerifyState] = {}
+verifying_users: dict[tuple[str, int], VerifyState] = {}
 
 
 # === 包装 ===
@@ -58,7 +58,9 @@ async def kick_user(bot: Bot, group_id: int, user_id: int, reason: str):
     if user_id == int(bot.self_id):
         return
     try:
-        await bot.set_group_kick(group_id=group_id, user_id=user_id, reject_add_request=False)
+        await bot.set_group_kick(
+            group_id=group_id, user_id=user_id, reject_add_request=False
+        )
         logger.info(f"Kicked {user_id}: {reason}")
     except Exception as e:
         logger.error(f"Kick failed: {e}")
@@ -76,7 +78,14 @@ async def start_verification(bot: Bot, group_id: int, user_id: int):
 
     # 2. 构造消息
     at_seg = MessageSegment.at(user_id)
-    msg = LangManager.get(conf.group.language, "verify_start", at_user=at_seg, timeout=conf.verify_timeout, question=q_text, attempts=conf.verify_attempts)
+    msg = LangManager.get(
+        conf.group.language,
+        "verify_start",
+        at_user=at_seg,
+        timeout=conf.verify_timeout,
+        question=q_text,
+        attempts=conf.verify_attempts,
+    )
 
     # 3. 发送题目
     question = await bot.send_group_msg(group_id=group_id, message=msg)
@@ -92,8 +101,12 @@ async def start_verification(bot: Bot, group_id: int, user_id: int):
             del verifying_users[(gid_str, user_id)]
 
             # 发送超时提示
-            timeout_msg = LangManager.get(conf.group.language, "verify_timeout", at_user=at_seg)
-            byebye_msg = await bot.send_group_msg(group_id=group_id, message=timeout_msg)
+            timeout_msg = LangManager.get(
+                conf.group.language, "verify_timeout", at_user=at_seg
+            )
+            byebye_msg = await bot.send_group_msg(
+                group_id=group_id, message=timeout_msg
+            )
 
             # 踢人
             await kick_user(bot, group_id, user_id, "Verify Timeout")
@@ -121,12 +134,14 @@ async def del_msg(bot: Bot, msg):
     msg_id = msg if isinstance(msg, int) else msg.get("message_id")
     try:
         await bot.delete_msg(message_id=msg_id)
-    except Exception as e:
+    except Exception as _:
         # 忽略撤回失败（可能已经被撤回或过期）
         pass
 
 
-async def clean_verify_msgs(bot: Bot, state: VerifyState, extra_msgs: list | None = None):
+async def clean_verify_msgs(
+    bot: Bot, state: VerifyState, extra_msgs: list | None = None
+):
     """
     新增：批量清理验证相关消息
     包括：机器人的提问、用户的回答历史、额外的提示消息
