@@ -10,6 +10,8 @@
 [![ruff](https://img.shields.io/badge/code%20style-ruff-black?style=flat-square&logo=ruff)](https://github.com/astral-sh/ruff)
 [![pre-commit](https://results.pre-commit.ci/badge/github/fllesser/nonebot-plugin-template/master.svg)](https://results.pre-commit.ci/latest/github/fllesser/nonebot-plugin-template/master)
 
+[English](./README.md)
+
 </div>
 
 # 如何开始

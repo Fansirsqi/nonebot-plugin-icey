@@ -10,6 +10,8 @@
 [![ruff](https://img.shields.io/badge/code%20style-ruff-black?style=flat-square&logo=ruff)](https://github.com/astral-sh/ruff)
 [![pre-commit.ci status](https://results.pre-commit.ci/badge/github/Fansirsqi/nonebot-plugin-icey/main.svg)](https://results.pre-commit.ci/latest/github/Fansirsqi/nonebot-plugin-icey/main)
 
+[简体中文](./README_CN.md)
+
 </div>
 
 # Getting Started
