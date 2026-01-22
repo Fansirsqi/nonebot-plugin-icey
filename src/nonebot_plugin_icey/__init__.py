@@ -7,7 +7,7 @@ require("nonebot_plugin_orm")
 
 # === 导入功能模块 ===
 # 所有的 import 都放在 require 之前，彻底解决 E402 报错
-from .common import __all__ as common_models
+from .common import __all__ as common_model
 from .config import Config
 from .modules import filters as filters_module
 
@@ -38,8 +38,7 @@ plugin_config = get_plugin_config(Config)
 # 通过 __all__ 声明导出的模块，解决 F401 (Imported but unused) 警告
 __all__ = [
     "Config",
-    "common_matcher",
-    "common_models",
+    "common_model",
     "filters_module",
     "help_module",
     "plugin_config",
