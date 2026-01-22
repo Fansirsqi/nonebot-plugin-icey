@@ -18,7 +18,7 @@ from .modules import request as request_module
 from .modules import verify as verify_module
 from .modules import welcome as welcome_module
 
-__version__ = "0.1.2"
+__version__ = "0.1.3"
 
 __plugin_meta__ = PluginMetadata(
     name="IceyGroupManager",
