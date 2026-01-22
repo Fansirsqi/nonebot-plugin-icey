@@ -11,6 +11,7 @@
 [![pre-commit.ci status](https://results.pre-commit.ci/badge/github/Fansirsqi/nonebot-plugin-icey/main.svg)](https://results.pre-commit.ci/latest/github/Fansirsqi/nonebot-plugin-icey/main)
 
 </div>
+
 # Getting Started
 
 ## Install Preview

@@ -22,7 +22,7 @@ __version__ = "0.1.4"
 
 __plugin_meta__ = PluginMetadata(
     name="IceyGroupManager",
-    description="Icey QQ群管助手",
+    description="Icey 群管助手",
     usage="请使用 /help 查看详细指令",
     type="application",
     homepage="https://github.com/Fansirsqi/nonebot-plugin-icey",
