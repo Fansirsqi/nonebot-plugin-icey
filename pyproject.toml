@@ -82,17 +82,28 @@ select = [
     "RUF",  # Ruff-specific rules
 ]
 ignore = [
-    "E402",  # module-import-not-at-top-of-file  # nonebot2 require() violates this
-    "B008",  # function-call-in-default-argument  # nonebot2 Depends() without Annotated violates this
-    "UP037", # quoted-annotation
-    # "RUF001",  # ambiguous-unicode-character-string
-    # "RUF002",  # ambiguous-unicode-character-docstring
-    # "RUF003",  # ambiguous-unicode-character-comment
-    # "ANN201",  # missing-return-type-undocumented-public-function
-    "ANN202",  # missing-return-type-private-function
-    "ANN401",  # any-type
-    "COM812",  # missing-trailing-comma
-    "PLC0415", # import-outside-top-level
+    "E402",    # 模块导入不在文件顶部 (NoneBot 的 require 需要)
+    "B008",    # 函数默认参数调用 (Depends 需要)
+    "UP037",   # 引用类型注解
+    "ANN202",  # 私有函数缺少返回类型
+    "ANN401",  # 动态类型 Any
+    "COM812",  # 缺少尾随逗号
+    "PLC0415", # 顶层之外的导入
+
+    # === 本次新增忽略 ===
+    "ANN201",  # 公共函数缺少返回类型 (太繁琐，忽略)
+    "BLE001",  # 捕获通用 Exception (Bot开发中常见，忽略)
+    "TRY003",  # 在 raise 中包含长消息 (忽略)
+    "SIM103",  # 不需要强制简化 bool(x) 返回 (忽略)
+    "TID252",  # 允许相对导入 (关键！解决你刚才运行报错的问题)
+    "ARG001",  # 允许未使用的参数 (Handler 中常有 unused args)
+    "SIM102",  # 允许嵌套 if
+    "SIM105",  # 允许 try-except-pass
+    "PLR0912", # 允许分支过多
+    "PIE810",  # 允许分开写 startswith
+    "E501",    # 忽略单行代码过长
+    "TC002",   # 忽略 "把第三方导入移到类型检查块中" 的建议
+    "TRY301",  # 忽略 "把 raise 抽象到内部函数" 的建议
 ]
 allowed-confusables = [
     "，",

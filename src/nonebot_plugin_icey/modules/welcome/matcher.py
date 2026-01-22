@@ -1,25 +1,49 @@
 import asyncio
 
 from nonebot import get_plugin_config, on_command, on_notice
-from nonebot.adapters.onebot.v11 import Bot, GroupDecreaseNoticeEvent, GroupIncreaseNoticeEvent, GroupMessageEvent, Message
+from nonebot.adapters.onebot.v11 import (
+    Bot,
+    GroupDecreaseNoticeEvent,
+    GroupIncreaseNoticeEvent,
+    GroupMessageEvent,
+    Message,
+)
 from nonebot.params import CommandArg
 
 from ...common.locales import LangManager
-from ...common.matcher import admin_perm
 from ...config import Config
-from .service import get_config, send_goodbye_message, send_welcome_message, update_config
+from .service import (
+    get_config,
+    send_goodbye_message,
+    send_welcome_message,
+    update_config,
+)
 
 # === 1. 合并后的主命令 ===
 # /welcome [on/off]
-cmd_welcome = on_command("welcome", priority=30, block=False, permission=admin_perm)
+cmd_welcome = on_command(
+    "welcome", priority=30, block=False, state={"require_admin": True}
+)
 # /goodbye [on/off]
-cmd_goodbye = on_command("goodbye", priority=30, block=False, permission=admin_perm)
+cmd_goodbye = on_command(
+    "goodbye", priority=30, block=False, state={"require_admin": True}
+)
 
-cmd_set_welcome = on_command("setwelcome", priority=30, block=False, permission=admin_perm)
-cmd_set_goodbye = on_command("setgoodbye", priority=30, block=False, permission=admin_perm)
-cmd_reset_welcome = on_command("resetwelcome", priority=30, block=False, permission=admin_perm)
-cmd_reset_goodbye = on_command("resetgoodbye", priority=30, block=False, permission=admin_perm)
-cmd_cleanwelcome = on_command("cleanwelcometime ", priority=30, block=False, permission=admin_perm)
+cmd_set_welcome = on_command(
+    "setwelcome", priority=30, block=False, state={"require_admin": True}
+)
+cmd_set_goodbye = on_command(
+    "setgoodbye", priority=30, block=False, state={"require_admin": True}
+)
+cmd_reset_welcome = on_command(
+    "resetwelcome", priority=30, block=False, state={"require_admin": True}
+)
+cmd_reset_goodbye = on_command(
+    "resetgoodbye", priority=30, block=False, state={"require_admin": True}
+)
+cmd_cleanwelcome = on_command(
+    "cleanwelcometime ", priority=30, block=False, state={"require_admin": True}
+)
 
 # === 新增：入群/退群事件监听 ===
 
@@ -83,8 +107,7 @@ async def _(bot: Bot, event: GroupMessageEvent, args: Message = CommandArg()):
             except Exception:
                 pass
             return
-        else:
-            await cmd_welcome.finish(msg)
+        await cmd_welcome.finish(msg)
 
     # 2. 如果参数是 on/off -> 切换开关
     if arg in ["on", "开启"]:
@@ -125,7 +148,9 @@ async def _(event: GroupMessageEvent, args: Message = CommandArg()):
     msg = args.extract_plain_text().strip()
     if not msg:
         conf = await get_config(str(event.group_id))
-        await cmd_set_welcome.finish(LangManager.get(conf.group.language, "err_no_content"))
+        await cmd_set_welcome.finish(
+            LangManager.get(conf.group.language, "err_no_content")
+        )
     await update_config(str(event.group_id), welcome_message=msg)
     await cmd_set_welcome.finish(f"✅ OK:\n{msg}")
 
@@ -135,7 +160,9 @@ async def _(event: GroupMessageEvent, args: Message = CommandArg()):
     msg = args.extract_plain_text().strip()
     if not msg:
         conf = await get_config(str(event.group_id))
-        await cmd_set_goodbye.finish(LangManager.get(conf.group.language, "err_no_content"))
+        await cmd_set_goodbye.finish(
+            LangManager.get(conf.group.language, "err_no_content")
+        )
 
     await update_config(str(event.group_id), goodbye_message=msg)
     await cmd_set_goodbye.finish(f"✅ OK:\n{msg}")
@@ -151,16 +178,22 @@ async def _(event: GroupMessageEvent, args: Message = CommandArg()):
         await cmd_cleanwelcome.finish(LangManager.get(lang, key, time=sec))
     except ValueError:
         conf = await get_config(str(event.group_id))
-        await cmd_cleanwelcome.finish(LangManager.get(conf.group.language, "err_time_format"))
+        await cmd_cleanwelcome.finish(
+            LangManager.get(conf.group.language, "err_time_format")
+        )
 
 
 @cmd_reset_welcome.handle()
 async def _(event: GroupMessageEvent):
-    await update_config(str(event.group_id), welcome_message=plugin_config.welcome_message)
+    await update_config(
+        str(event.group_id), welcome_message=plugin_config.welcome_message
+    )
     await cmd_reset_welcome.finish("✅ Reset Welcome Message")
 
 
 @cmd_reset_goodbye.handle()
 async def _(event: GroupMessageEvent):
-    await update_config(str(event.group_id), goodbye_message=plugin_config.goodbye_message)
+    await update_config(
+        str(event.group_id), goodbye_message=plugin_config.goodbye_message
+    )
     await cmd_reset_goodbye.finish("✅ Reset Goodbye Message")

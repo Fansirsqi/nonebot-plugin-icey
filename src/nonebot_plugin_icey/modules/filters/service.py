@@ -1,18 +1,18 @@
 import re
 import shlex
-from typing import List, Optional, Tuple, Union, cast
+from typing import cast
 
 from nonebot.adapters.onebot.v11 import Bot, GroupMessageEvent, Message, MessageSegment
 from nonebot_plugin_orm import get_session
 from sqlalchemy import delete, select
 from sqlalchemy.engine import CursorResult
 
-from .model import FilterRule, MatchMode, ReplyType
 from ...common.dao import ensure_group_exist
+from .model import FilterRule, MatchMode, ReplyType
 
 
 # === 核心逻辑：指令参数解析 ===
-def parse_rose_args(raw_text: str) -> Tuple[List[str], str]:
+def parse_args(raw_text: str) -> tuple[list[str], str]:
     """
     解析 Rose 风格的参数。
     支持:
@@ -30,7 +30,9 @@ def parse_rose_args(raw_text: str) -> Tuple[List[str], str]:
         try:
             raw_items = [t.strip() for t in trigger_block.split(",")]
             for item in raw_items:
-                if (item.startswith('"') and item.endswith('"')) or (item.startswith("'") and item.endswith("'")):
+                if (item.startswith('"') and item.endswith('"')) or (
+                    item.startswith("'") and item.endswith("'")
+                ):
                     triggers.append(item[1:-1])
                 else:
                     triggers.append(item)
@@ -59,11 +61,11 @@ def parse_rose_args(raw_text: str) -> Tuple[List[str], str]:
     return clean_triggers, reply.strip()
 
 
-def process_trigger_mode(trigger: str) -> Tuple[str, MatchMode]:
+def process_trigger_mode(trigger: str) -> tuple[str, MatchMode]:
     """处理 prefix: 和 exact: 前缀"""
     if trigger.startswith("prefix:"):
         return trigger[7:], MatchMode.PREFIX
-    elif trigger.startswith("exact:"):
+    if trigger.startswith("exact:"):
         return trigger[6:], MatchMode.EXACT
     return trigger, MatchMode.CONTAINS
 
@@ -85,11 +87,19 @@ async def add_filter(group_id: str, trigger: str, reply: str, r_type: ReplyType)
 
     async with get_session() as session:
         # 2. 删除旧规则 (覆盖逻辑)
-        stmt = delete(FilterRule).where(FilterRule.group_id == group_id, FilterRule.trigger == trigger_content)
+        stmt = delete(FilterRule).where(
+            FilterRule.group_id == group_id, FilterRule.trigger == trigger_content
+        )
         await session.execute(stmt)
 
         # 3. 插入新规则
-        new_rule = FilterRule(group_id=group_id, trigger=trigger_content, match_mode=mode, reply_type=r_type, reply_content=reply)
+        new_rule = FilterRule(
+            group_id=group_id,
+            trigger=trigger_content,
+            match_mode=mode,
+            reply_type=r_type,
+            reply_content=reply,
+        )
         session.add(new_rule)
         await session.commit()
 
@@ -98,8 +108,10 @@ async def delete_filter(group_id: str, trigger: str) -> bool:
     t_content, _ = process_trigger_mode(trigger)
 
     async with get_session() as session:
-        stmt = delete(FilterRule).where(FilterRule.group_id == group_id, FilterRule.trigger == t_content)
-        result = cast(CursorResult, await session.execute(stmt))
+        stmt = delete(FilterRule).where(
+            FilterRule.group_id == group_id, FilterRule.trigger == t_content
+        )
+        result = cast("CursorResult", await session.execute(stmt))
         await session.commit()
         return result.rowcount > 0
 
@@ -111,14 +123,14 @@ async def delete_all_filters(group_id: str):
         await session.commit()
 
 
-async def get_all_filters(group_id: str) -> List[str]:
+async def get_all_filters(group_id: str) -> list[str]:
     async with get_session() as session:
         stmt = select(FilterRule.trigger).where(FilterRule.group_id == group_id)
         result = await session.execute(stmt)
         return list(result.scalars().all())
 
 
-async def find_match(group_id: str, text: str) -> Optional[FilterRule]:
+async def find_match(group_id: str, text: str) -> FilterRule | None:
     if not text:
         return None
 
@@ -152,7 +164,9 @@ async def find_match(group_id: str, text: str) -> Optional[FilterRule]:
 # === 消息构造 ===
 
 
-async def construct_reply(bot: Bot, event: GroupMessageEvent, rule: FilterRule) -> Union[str, Message, MessageSegment]:
+async def construct_reply(
+    bot: Bot, event: GroupMessageEvent, rule: FilterRule
+) -> str | Message | MessageSegment:
     if rule.reply_type == ReplyType.IMAGE:
         return MessageSegment.image(file=rule.reply_content)
     if rule.reply_type == ReplyType.STICKER:
@@ -171,8 +185,14 @@ async def construct_reply(bot: Bot, event: GroupMessageEvent, rule: FilterRule) 
 
     if "{user}" in text:
         try:
-            user_info = await bot.get_group_member_info(group_id=event.group_id, user_id=target_user_id)
-            name = user_info.get("card") or user_info.get("nickname") or str(target_user_id)
+            user_info = await bot.get_group_member_info(
+                group_id=event.group_id, user_id=target_user_id
+            )
+            name = (
+                user_info.get("card")
+                or user_info.get("nickname")
+                or str(target_user_id)
+            )
             text = text.replace("{user}", name)
         except Exception:
             text = text.replace("{user}", str(target_user_id))

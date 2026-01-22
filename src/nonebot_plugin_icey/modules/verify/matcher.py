@@ -1,36 +1,55 @@
 import asyncio
 
 from nonebot import on_command, on_message, on_notice
-from nonebot.adapters.onebot.v11 import Bot, GroupIncreaseNoticeEvent, GroupMessageEvent, Message, MessageSegment
+from nonebot.adapters.onebot.v11 import (
+    Bot,
+    GroupIncreaseNoticeEvent,
+    GroupMessageEvent,
+    Message,
+    MessageSegment,
+)
 from nonebot.log import logger
 from nonebot.matcher import Matcher
 from nonebot.params import CommandArg
 
-from ...common.locales import LangManager
-from ...common.matcher import admin_perm
-
-
 # 还需要导入欢迎模块的发送消息函数（验证通过后欢迎）
 # 注意：跨模块引用
-
 # === 1. 新增导入：通用DAO和欢迎配置模型 ===
 from ...common.dao import get_sub_config
+from ...common.locales import LangManager
 from ..welcome.model import WelcomeConfig
 from ..welcome.service import send_welcome_message
-
-from .service import clean_verify_msgs, del_msg, get_config, kick_user, start_verification, update_config, verifying_users
+from .service import (
+    clean_verify_msgs,
+    del_msg,
+    get_config,
+    kick_user,
+    start_verification,
+    update_config,
+    verifying_users,
+)
 
 # 1. 合并后的主命令 /verify [on/off]
-cmd_verify = on_command("verify", priority=30, block=False, permission=admin_perm)
+cmd_verify = on_command(
+    "verify", priority=30, block=False, state={"require_admin": True}
+)
 
-cmd_level_check = on_command("levelcheck", priority=30, block=False, permission=admin_perm)
+cmd_level_check = on_command(
+    "levelcheck", priority=30, block=False, state={"require_admin": True}
+)
 
-cmd_join_level_set = on_command("levelset", priority=30, block=False, permission=admin_perm)
+cmd_join_level_set = on_command(
+    "levelset", priority=30, block=False, state={"require_admin": True}
+)
 
 # 2. 设置时间的命令
-cmd_set_verify_timeout = on_command("verifytime", priority=30, block=False, permission=admin_perm)
+cmd_set_verify_timeout = on_command(
+    "verifytime", priority=30, block=False, state={"require_admin": True}
+)
 
-clear_group = on_command("clear", priority=30, block=False, permission=admin_perm)
+clear_group = on_command(
+    "clear", priority=30, block=False, state={"require_admin": True}
+)
 
 
 # === 1. 入群监听器 ===
@@ -39,7 +58,9 @@ verify_notice_handle = on_notice(priority=29, block=False)
 
 
 @cmd_level_check.handle()
-async def cmd_set_level_check_handle(event: GroupMessageEvent, args: Message = CommandArg()):
+async def cmd_set_level_check_handle(
+    event: GroupMessageEvent, args: Message = CommandArg()
+):
     arg = args.extract_plain_text().strip().lower()
     gid = str(event.group_id)
     if arg in ["on", "开启"]:
@@ -60,9 +81,13 @@ async def _(event: GroupMessageEvent, args: Message = CommandArg()):
     msg = int(args.extract_plain_text().strip())
     conf = await get_config(str(event.group_id))
     if msg is False:
-        await cmd_join_level_set.finish(LangManager.get(conf.group.language, "err_no_content"))
+        await cmd_join_level_set.finish(
+            LangManager.get(conf.group.language, "err_no_content")
+        )
     await update_config(str(event.group_id), allowed_level=msg)
-    await cmd_join_level_set.finish(LangManager.get(conf.group.language, "set_qq_level", check_level=msg))
+    await cmd_join_level_set.finish(
+        LangManager.get(conf.group.language, "set_qq_level", check_level=msg)
+    )
 
 
 @clear_group.handle()
@@ -80,16 +105,22 @@ async def clear_group_handle(bot: Bot, event: GroupMessageEvent):
             uid = i.get("user_id", None)
             if uid:
                 user_info = await bot.get_stranger_info(user_id=uid, no_cache=True)
-                qq_level = int(user_info.get("qqLevel", None) or user_info.get("level", 0))
+                qq_level = int(
+                    user_info.get("qqLevel", None) or user_info.get("level", 0)
+                )
                 at_seg = MessageSegment.at(uid)
                 if qq_level < conf.allowed_level:
-                    qq_level_check = LangManager.get(lang, "qq_level_check", at_user=at_seg, qq_level=qq_level, check_level=conf.allowed_level)
+                    qq_level_check = LangManager.get(
+                        lang,
+                        "qq_level_check",
+                        at_user=at_seg,
+                        qq_level=qq_level,
+                        check_level=conf.allowed_level,
+                    )
                     await clear_group.send(qq_level_check)
                     # await kick_user(bot, event.group_id, uid, qq_level_check.extract_plain_text())
     except Exception as e:
         logger.error(e)
-        pass
-    pass
 
 
 @verify_notice_handle.handle()
@@ -107,7 +138,9 @@ async def _(matcher: Matcher, bot: Bot, event: GroupIncreaseNoticeEvent):
         if qq_level < conf.allowed_level:
             qq_level_check = LangManager.get(lang, "qq_level_check", at_user=at_seg)
             await verify_notice_handle.send(qq_level_check)
-            await kick_user(bot, event.group_id, uid, qq_level_check.extract_plain_text())
+            await kick_user(
+                bot, event.group_id, uid, qq_level_check.extract_plain_text()
+            )
             return
     # 如果开启了验证
     if conf.verify_enabled:
@@ -199,7 +232,12 @@ async def _(bot: Bot, event: GroupMessageEvent):
 
         # 次数未用完 -> 提示重试
         else:
-            retry_msg = LangManager.get(lang, "verify_fail_retry", at_user=at_seg, remaining=state.remaining_attempts)
+            retry_msg = LangManager.get(
+                lang,
+                "verify_fail_retry",
+                at_user=at_seg,
+                remaining=state.remaining_attempts,
+            )
             retry_msg_id = await verify_msg.send(retry_msg)
 
             # 提示重试的消息可以稍后撤回，或者留在那里最后一起撤回
@@ -258,9 +296,13 @@ async def _(event: GroupMessageEvent, args: Message = CommandArg()):
 
         # 使用 update_config 更新时间
         lang = await update_config(gid, verify_timeout=sec)
-        await cmd_set_verify_timeout.finish(LangManager.get(lang, "set_verify_time", time=sec))
+        await cmd_set_verify_timeout.finish(
+            LangManager.get(lang, "set_verify_time", time=sec)
+        )
 
     except ValueError:
         # 获取当前配置以确定回复语言
         conf = await get_config(gid)
-        await cmd_set_verify_timeout.finish(LangManager.get(conf.group.language, "err_time_format"))
+        await cmd_set_verify_timeout.finish(
+            LangManager.get(conf.group.language, "err_time_format")
+        )

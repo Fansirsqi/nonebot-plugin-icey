@@ -1,11 +1,10 @@
 from nonebot import on_command, on_message
 from nonebot.adapters.onebot.v11 import Bot, GroupMessageEvent, Message
+from nonebot.log import logger
 from nonebot.matcher import Matcher
 from nonebot.params import CommandArg
-from nonebot.log import logger
 
 # 请根据你的项目结构调整 admin_perm 的导入路径
-from ...common.matcher import admin_perm
 from .model import ReplyType
 from .service import (
     add_filter,
@@ -14,14 +13,24 @@ from .service import (
     delete_filter,
     find_match,
     get_all_filters,
-    parse_rose_args,
+    parse_args,
 )
 
 # 注册命令
-cmd_filter = on_command("filter", aliases={"addfilter"}, permission=admin_perm, priority=30, block=False)
-cmd_stop = on_command("stop", permission=admin_perm, priority=30, block=False)
-cmd_stopall = on_command("stopall", permission=admin_perm, priority=30, block=False)
-cmd_list = on_command("filters", permission=admin_perm, priority=30, block=False)
+cmd_filter = on_command(
+    "filter",
+    aliases={"addfilter"},
+    state={"require_admin": True},
+    priority=30,
+    block=False,
+)
+cmd_stop = on_command("stop", state={"require_admin": True}, priority=30, block=False)
+cmd_stopall = on_command(
+    "stopall", state={"require_admin": True}, priority=30, block=False
+)
+cmd_list = on_command(
+    "filters", state={"require_admin": True}, priority=30, block=False
+)
 
 # 消息监听器：优先级较低，确保不干扰命令
 msg_handler = on_message(priority=99, block=False)
@@ -30,7 +39,7 @@ msg_handler = on_message(priority=99, block=False)
 @cmd_filter.handle()
 async def _(bot: Bot, event: GroupMessageEvent, args: Message = CommandArg()):
     raw_arg = args.extract_plain_text().strip()
-    logger.debug(f"Filter received arg: |{raw_arg}|") # <--- 添加这行调试
+    logger.debug(f"Filter received arg: |{raw_arg}|")  # <--- 添加这行调试
     gid = str(event.group_id)
 
     # 1. 检查是否有 Reply (处理媒体素材)
@@ -48,7 +57,7 @@ async def _(bot: Bot, event: GroupMessageEvent, args: Message = CommandArg()):
             # 可以扩展 sticker 判断，视 OneBot 实现而定
 
     # 2. 解析 Rose 风格参数
-    triggers, text_reply = parse_rose_args(raw_arg)
+    triggers, text_reply = parse_args(raw_arg)
 
     if not triggers:
         await cmd_filter.finish("Usage: /filter <trigger> <reply> (or reply to media)")
@@ -81,7 +90,7 @@ async def _(bot: Bot, event: GroupMessageEvent, args: Message = CommandArg()):
 async def _(event: GroupMessageEvent, args: Message = CommandArg()):
     raw_arg = args.extract_plain_text().strip()
     # 复用解析逻辑只取 triggers
-    triggers, _ = parse_rose_args(raw_arg)
+    triggers, _ = parse_args(raw_arg)
 
     if not triggers:
         if raw_arg:

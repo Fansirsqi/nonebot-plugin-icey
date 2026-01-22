@@ -6,11 +6,13 @@ from .matcher import cmd_filter, cmd_list, cmd_stop, cmd_stopall, msg_handler
 
 __plugin_meta__ = PluginMetadata(
     name="Filter",
-    description="关键词自动回复 (Rose Style)",
+    description="关键词自动回复",
     usage="/filter <trigger> <reply>",
 )
 
-logger.opt(colors=True).success(f'Succeeded to load icey plugin model "<m>{__name__}</m>"')
+logger.opt(colors=True).success(
+    f'Succeeded to load icey plugin model "<m>{__name__}</m>"'
+)
 __all__ = [
     "cmd_filter",
     "cmd_list",
