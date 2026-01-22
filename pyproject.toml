@@ -144,6 +144,7 @@ typeCheckingMode = "standard"
 
 
 [tool.bumpversion]
+# commit_args = "--no-verify" 
 current_version = "0.1.2"
 commit = true
 message = "release: bump version from {current_version} to {new_version}"
@@ -161,6 +162,12 @@ replace = "version = \"{new_version}\""
 filename = "src/nonebot_plugin_icey/__init__.py"
 search = "__version__ = \"{current_version}\""
 replace = "__version__ = \"{new_version}\""
+
+# === 新增：让 bumpversion 自动修改 uv.lock ===
+[[tool.bumpversion.files]]
+filename = "uv.lock"
+search = "name = \"nonebot-plugin-icey\"\nversion = \"{current_version}\""
+replace = "name = \"nonebot-plugin-icey\"\nversion = \"{new_version}\""
 
 [tool.poe.tasks]
 bump = "bump-my-version bump"
