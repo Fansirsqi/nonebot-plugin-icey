@@ -27,7 +27,7 @@ __plugin_meta__ = PluginMetadata(
     type="application",
     homepage="https://github.com/Fansirsqi/nonebot-plugin-icey",
     config=Config,
-    supported_adapters={"~onebot.v11"},
+    supported_adapters={"~onebot.v11", "~telegram"},
     extra={"author": "owner <fansir.code@gmail.com>"},
 )
 
