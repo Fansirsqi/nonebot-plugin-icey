@@ -157,8 +157,8 @@ async def is_verifying(event: GroupMessageEvent) -> bool:
     return (str(event.group_id), event.user_id) in verifying_users
 
 
-# 优先级 1，block=True，确保验证者的消息被拦截，不会触发其他命令
-verify_msg = on_message(rule=is_verifying, priority=29, block=True)
+# 优先级 1，block=False，允许其他命令正常执行
+verify_msg = on_message(rule=is_verifying, priority=29, block=False)
 
 
 @verify_msg.handle()
