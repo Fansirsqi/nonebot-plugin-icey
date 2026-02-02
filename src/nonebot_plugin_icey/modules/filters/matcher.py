@@ -16,6 +16,12 @@ from .service import (
     parse_args,
 )
 
+EXACT_MODE = 1
+PREFIX_MODE = 2
+REPLY_IMAGE_TYPE = 1
+REPLY_STICKER_TYPE = 2
+MAX_REPLY_LENGTH = 2000
+
 # 注册命令
 cmd_filter = on_command(
     "filter",
@@ -56,8 +62,7 @@ async def _(bot: Bot, event: GroupMessageEvent, args: Message = CommandArg()):
                 break
             # 可以扩展 sticker 判断，视 OneBot 实现而定
 
-    # 2. 解析 Rose 风格参数
-    triggers, text_reply = parse_args(raw_arg)
+    triggers, text_reply, at_user_id = parse_args(raw_arg)
 
     if not triggers:
         await cmd_filter.finish("Usage: /filter <trigger> <reply> (or reply to media)")
@@ -80,7 +85,7 @@ async def _(bot: Bot, event: GroupMessageEvent, args: Message = CommandArg()):
     # 4. 保存所有规则
     count = 0
     for t in triggers:
-        await add_filter(gid, t, final_content, final_type)
+        await add_filter(gid, t, final_content, final_type, at_user_id)
         count += 1
 
     await cmd_filter.finish(f"Saved {count} filter(s).")
@@ -90,7 +95,7 @@ async def _(bot: Bot, event: GroupMessageEvent, args: Message = CommandArg()):
 async def _(event: GroupMessageEvent, args: Message = CommandArg()):
     raw_arg = args.extract_plain_text().strip()
     # 复用解析逻辑只取 triggers
-    triggers, _ = parse_args(raw_arg)
+    triggers, _, _ = parse_args(raw_arg)
 
     if not triggers:
         if raw_arg:
@@ -125,9 +130,38 @@ async def _(event: GroupMessageEvent):
         await cmd_list.finish("No filters set in this chat.")
 
     msg = "Filters in this chat:\n"
-    # 简单的格式化，每行显示一个 trigger
+    # 格式化显示每个规则的触发词和回复内容
     for f in filters:
-        msg += f"- {f}\n"
+        # 添加匹配模式前缀
+        mode_prefix = ""
+        if f.match_mode == EXACT_MODE:  # EXACT
+            mode_prefix = "exact:"
+        elif f.match_mode == PREFIX_MODE:  # PREFIX
+            mode_prefix = "prefix:"
+
+        # 构建触发词显示
+        trigger_display = f"{mode_prefix}{f.trigger}"
+
+        # 构建回复内容显示
+        if f.reply_type == REPLY_IMAGE_TYPE:  # IMAGE
+            reply_display = "[图片]"
+        elif f.reply_type == REPLY_STICKER_TYPE:  # STICKER
+            reply_display = "[表情]"
+        else:
+            # 限制回复内容长度，避免过长
+            reply_display = (
+                f.reply_content[:MAX_REPLY_LENGTH] + "..."
+                if len(f.reply_content) > MAX_REPLY_LENGTH
+                else f.reply_content
+            )
+
+        # 添加艾特信息
+        at_info = ""
+        if f.at_user_id:
+            at_info = f" @[{f.at_user_id}]"
+
+        msg += f"- {trigger_display} -> {reply_display}{at_info}\n"
+
     await cmd_list.finish(msg)
 
 

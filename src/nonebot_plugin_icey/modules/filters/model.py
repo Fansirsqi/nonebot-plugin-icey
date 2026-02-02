@@ -1,5 +1,4 @@
 from enum import IntEnum
-from typing import TYPE_CHECKING
 
 from sqlalchemy import ForeignKey, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -35,6 +34,7 @@ class FilterRule(BaseGroupConfig):
     match_mode: Mapped[int] = mapped_column(default=int(MatchMode.CONTAINS))
     reply_type: Mapped[int] = mapped_column(default=int(ReplyType.TEXT))
     reply_content: Mapped[str] = mapped_column(Text)
+    at_user_id: Mapped[str | None] = mapped_column(String(20), nullable=True)
 
     # 关系定义 (自动加载 GroupInfo)
     group: Mapped[GroupInfo] = relationship(lazy="selectin")

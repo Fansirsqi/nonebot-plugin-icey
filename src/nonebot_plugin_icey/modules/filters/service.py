@@ -12,17 +12,27 @@ from .model import FilterRule, MatchMode, ReplyType
 
 
 # === 核心逻辑：指令参数解析 ===
-def parse_args(raw_text: str) -> tuple[list[str], str]:
+def parse_args(raw_text: str) -> tuple[list[str], str, str | None]:
     """
     解析 Rose 风格的参数。
     支持:
     word reply
     "phrase" reply
     (word1, "phrase 2") reply
+    支持 {at:用户ID} 格式指定艾特目标
     """
     raw_text = raw_text.strip()
     triggers = []
     reply = ""
+    at_user_id = None
+
+    # 提取 {at:用户ID}
+    at_match = re.search(r"\{at:(\d+)\}", raw_text)
+    if at_match:
+        at_user_id = at_match.group(1)
+        # 从回复中移除 {at:用户ID} 标记
+        raw_text = raw_text.replace(at_match.group(0), "")
+
     multi_match = re.match(r"^\((.*?)\)\s*(.*)$", raw_text, re.DOTALL)
     if multi_match:
         trigger_block = multi_match.group(1)
@@ -56,9 +66,9 @@ def parse_args(raw_text: str) -> tuple[list[str], str]:
                     else:
                         reply = ""
         except ValueError:
-            return [], ""
+            return [], "", None
     clean_triggers = [t for t in triggers if t]
-    return clean_triggers, reply.strip()
+    return clean_triggers, reply.strip(), at_user_id
 
 
 def process_trigger_mode(trigger: str) -> tuple[str, MatchMode]:
@@ -73,7 +83,13 @@ def process_trigger_mode(trigger: str) -> tuple[str, MatchMode]:
 # === 数据库操作 ===
 
 
-async def add_filter(group_id: str, trigger: str, reply: str, r_type: ReplyType):
+async def add_filter(
+    group_id: str,
+    trigger: str,
+    reply: str,
+    r_type: ReplyType,
+    at_user_id: str | None = None,
+):
     """
     添加过滤规则
     注意：这里不能使用 dao.update_sub_config，因为是一对多关系
@@ -99,6 +115,7 @@ async def add_filter(group_id: str, trigger: str, reply: str, r_type: ReplyType)
             match_mode=mode,
             reply_type=r_type,
             reply_content=reply,
+            at_user_id=at_user_id,
         )
         session.add(new_rule)
         await session.commit()
@@ -123,9 +140,9 @@ async def delete_all_filters(group_id: str):
         await session.commit()
 
 
-async def get_all_filters(group_id: str) -> list[str]:
+async def get_all_filters(group_id: str) -> list[FilterRule]:
     async with get_session() as session:
-        stmt = select(FilterRule.trigger).where(FilterRule.group_id == group_id)
+        stmt = select(FilterRule).where(FilterRule.group_id == group_id)
         result = await session.execute(stmt)
         return list(result.scalars().all())
 
@@ -198,5 +215,10 @@ async def construct_reply(
             text = text.replace("{user}", str(target_user_id))
 
     msg = Message()
+
+    # 如果设置了 at_user_id，先添加艾特
+    if rule.at_user_id:
+        msg.append(MessageSegment.at(user_id=int(rule.at_user_id)))
+
     msg.append(text)
     return msg
