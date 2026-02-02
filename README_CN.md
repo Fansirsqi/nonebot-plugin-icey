@@ -16,7 +16,7 @@
 
 # 如何开始
 
-## 安装预览
+## ~~安装预览(过期待补充)~~
 
 [![asciicast](https://asciinema.org/a/bqOZS0o36s8Gjjwg.svg)](https://asciinema.org/a/bqOZS0o36s8Gjjwg)
 
@@ -28,11 +28,15 @@
 
 确保环境中有`nb-cli`工具
 
-`uv tool install nb-cli` 
+```
+uv tool install nb-cli
+```
 
 (以下`cli`中操作方法上下选择,空格选中,回车完成)
 
-`nb init` 选一个模板,输入项目名称,`icey`
+```
+nb init 选一个模板,输入项目名称,icey
+```
 
 适配器 `onebotv11`,`telegram`
 
@@ -56,11 +60,30 @@
 
 现在cd到项目目录下
 
+## 2. 选择持久化方式
+
+得益于`nonebot-plugin-orm`插件，持久化的方式交给您自动选择，你可以选择`orm`支持的任意数据库作为数据持久化方式
+根据不同方式配置环境即可
+
+- sqlite `uv add "nonebot-plugin-orm[aiosqlite]"`
+
+`SQLALCHEMY_DATABASE_URL=sqlite+aiosqlite:///yourpath/dbname`
+
+- postgresql `uv add "nonebot-plugin-orm[postgresql]"`
+
+`SQLALCHEMY_DATABASE_URL=postgresql+asyncpg://user:password@host:port/dbname`
+
+- mysql `uv add "nonebot-plugin-orm[mysql]"`
+
+`SQLALCHEMY_DATABASE_URL=mysql+asyncmy://user:password@host:port/dbname`
+
 同步nonebot依赖
 
-`uv sync`
+```
+uv sync
+```
 
-## 2. 添加本模块依赖
+## 3. 添加本模块依赖
 
 `uv add nonebot-plugin-icey`/`pip install nonebot-plugin-icey`/`pdm add nonebot-plugin-icey`/`poetry add nonebot-plugin-icey` 任选一个应该就行
 
@@ -78,13 +101,10 @@ nonebot_plugin_icey = ["nonebot_plugin_icey"] #追加这一行
 > [!NOTE]
 每次更新升级或者第一次初始化时需要执行以下步骤
 
-`nb orm revision -m "xxxx_date"`
-
-`nb orm upgrade`
-
-`nb run --reload`
-
-```bash
+```
+nb orm revision -m "xxxx_date"
+nb orm upgrade
+nb run --reload
 ➜ nb orm revision -m "2026_01_22_15_10"
 使用 Python: xxxxxxxxxxxx\.venv\Scripts\python.exe
 01-22 15:02:03 [SUCCESS] nonebot | NoneBot is initializing...
@@ -148,8 +168,6 @@ Watchfiles 在 "data\nonebot_plugin_orm\migrations\f3408d0c8073_xxxx_date.py" �
 
 ```
 
-### 3. 最后,享受你的机器人吧～
+## 4. 最后,享受你的机器人吧～
 
 ## [用法](/.docs/Usage_CN.md)
-
-
