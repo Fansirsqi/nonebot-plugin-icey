@@ -5,12 +5,10 @@ description = "Icey QQ群管助手"
 readme = "README.md"
 requires-python = ">=3.9, <4.0"
 dependencies = [
-    "nonebot2[fastapi]>=2.4.4",
-    "nonebot2[httpx]>=2.4.4",
-    "nonebot2[websockets]>=2.4.4",
+    "nonebot2>=2.4.4",
     "nonebot-adapter-onebot>=2.4.6",
     "nonebot-adapter-telegram>=0.1.0b20",
-    "nonebot-plugin-orm[mysql,postgresql,sqlite]>=0.8.3",
+    "nonebot-plugin-orm>=0.8.3"
 ]
 
 [project.optional-dependencies]
@@ -187,6 +185,12 @@ replace = "name = \"nonebot-plugin-icey\"\nversion = \"{new_version}\""
 
 [tool.poe.tasks]
 bump = "bump-my-version bump"
+
+[dependency-groups]
+dev = [
+    "nonebot-plugin-orm[sqlite]>=0.8.3",
+    "nonebot2[fastapi,httpx,websockets]>=2.4.4",
+]
 
 
 # ❯ uv tool list
