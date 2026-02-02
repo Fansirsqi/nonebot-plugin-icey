@@ -1,5 +1,5 @@
 # sesametk/plugins/icey/common/dao.py
-from typing import Type, TypeVar
+from typing import TypeVar
 
 from nonebot_plugin_orm import get_session
 from sqlalchemy import select, update
