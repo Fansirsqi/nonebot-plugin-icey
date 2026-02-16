@@ -69,15 +69,22 @@ def get_all_commands() -> dict[str, Any]:
                         # 如果无法通过 get_plugin_by_module_name 获取插件，回退到原来的导入方式
                         matcher_file = module_dir / "matcher.py"
                         if matcher_file.exists():
-                            module_name = f"nonebot_plugin_icey.modules.{module_dir.name}.matcher"
+                            module_name = (
+                                f"nonebot_plugin_icey.modules.{module_dir.name}.matcher"
+                            )
                             try:
                                 module = importlib.import_module(module_name)
 
                                 # 遍历模块中的所有对象，查找 Matcher 对象
                                 for name, obj in inspect.getmembers(module):
-                                    if hasattr(obj, "__class__") and obj.__class__.__name__ == "Matcher":
+                                    if (
+                                        hasattr(obj, "__class__")
+                                        and obj.__class__.__name__ == "Matcher"
+                                    ):
                                         # 检查对象名是否以 cmd_ 开头，这通常是命令匹配器的命名约定
-                                        if name.startswith("cmd_") or name.startswith("command_"):
+                                        if name.startswith("cmd_") or name.startswith(
+                                            "command_"
+                                        ):
                                             # 尝试获取命令名称
                                             if hasattr(obj, "_default_state"):
                                                 state = obj._default_state
@@ -94,12 +101,16 @@ def get_all_commands() -> dict[str, Any]:
                                                 if "_aliases" in state:
                                                     aliases = state["_aliases"]
                                                     for alias in aliases:
-                                                        if isinstance(alias, (str, tuple)):
+                                                        if isinstance(
+                                                            alias, (str, tuple)
+                                                        ):
                                                             # 如果是元组，取第一个元素作为命令名
                                                             if isinstance(alias, tuple):
                                                                 alias = alias[0]
                                                             if isinstance(alias, str):
-                                                                description = f"命令: /{alias}"
+                                                                description = (
+                                                                    f"命令: /{alias}"
+                                                                )
                                                                 commands[alias] = {
                                                                     "matcher": obj,
                                                                     "description": description,
@@ -225,7 +236,9 @@ def get_all_commands() -> dict[str, Any]:
     }
 
     for cmd_name, description in detailed_descriptions.items():
-        if cmd_name in commands and commands[cmd_name]["description"].startswith("命令:"):
+        if cmd_name in commands and commands[cmd_name]["description"].startswith(
+            "命令:"
+        ):
             commands[cmd_name]["description"] = description
 
     return commands
@@ -236,7 +249,9 @@ cmd_help = on_command("help", aliases={"帮助"}, priority=29, block=True)
 
 
 @cmd_help.handle()
-async def handle_help(bot: Bot, event: GroupMessageEvent, matcher: Matcher, args: Message = CommandArg()):
+async def handle_help(
+    bot: Bot, event: GroupMessageEvent, matcher: Matcher, args: Message = CommandArg()
+):
     """
     处理 /help 命令
     """
@@ -252,7 +267,9 @@ async def handle_help(bot: Bot, event: GroupMessageEvent, matcher: Matcher, args
     if arg:
         if arg in all_commands:
             cmd_info = all_commands[arg]
-            response = LangManager.get(lang, "help_specific_cmd", cmd=arg, desc=cmd_info["description"])
+            response = LangManager.get(
+                lang, "help_specific_cmd", cmd=arg, desc=cmd_info["description"]
+            )
             await matcher.finish(response)
         else:
             response = LangManager.get(lang, "help_cmd_not_found", cmd=arg)
@@ -271,7 +288,10 @@ async def handle_help(bot: Bot, event: GroupMessageEvent, matcher: Matcher, args
             desc = cmd_info["description"]
             if any(w in desc.lower() for w in ["welcome", "wel", "gdb", "goodbye"]):
                 welcome_cmds[cmd_name] = desc
-            elif any(w in desc.lower() for w in ["verify", "vy", "level", "check", "cler", "cl"]):
+            elif any(
+                w in desc.lower()
+                for w in ["verify", "vy", "level", "check", "cler", "cl"]
+            ):
                 verify_cmds[cmd_name] = desc
             elif "lang" in desc.lower():
                 common_cmds[cmd_name] = desc
@@ -283,7 +303,12 @@ async def handle_help(bot: Bot, event: GroupMessageEvent, matcher: Matcher, args
             help_text += LangManager.get(lang, "help_welcome_section") + "\n"
             for cmd_name, desc in welcome_cmds.items():
                 usage = desc.split("，用法:")[1] if "，用法:" in desc else desc
-                help_text += LangManager.get(lang, "help_cmd_format", cmd_name=cmd_name, usage=usage) + "\n"
+                help_text += (
+                    LangManager.get(
+                        lang, "help_cmd_format", cmd_name=cmd_name, usage=usage
+                    )
+                    + "\n"
+                )
             help_text += "\n"
 
         # 显示验证模块命令
@@ -291,7 +316,12 @@ async def handle_help(bot: Bot, event: GroupMessageEvent, matcher: Matcher, args
             help_text += LangManager.get(lang, "help_verify_section") + "\n"
             for cmd_name, desc in verify_cmds.items():
                 usage = desc.split("，用法:")[1] if "，用法:" in desc else desc
-                help_text += LangManager.get(lang, "help_cmd_format", cmd_name=cmd_name, usage=usage) + "\n"
+                help_text += (
+                    LangManager.get(
+                        lang, "help_cmd_format", cmd_name=cmd_name, usage=usage
+                    )
+                    + "\n"
+                )
             help_text += "\n"
 
         # 显示通用模块命令
@@ -299,7 +329,12 @@ async def handle_help(bot: Bot, event: GroupMessageEvent, matcher: Matcher, args
             help_text += LangManager.get(lang, "help_common_section") + "\n"
             for cmd_name, desc in common_cmds.items():
                 usage = desc.split("，用法:")[1] if "，用法:" in desc else desc
-                help_text += LangManager.get(lang, "help_cmd_format", cmd_name=cmd_name, usage=usage) + "\n"
+                help_text += (
+                    LangManager.get(
+                        lang, "help_cmd_format", cmd_name=cmd_name, usage=usage
+                    )
+                    + "\n"
+                )
             help_text += "\n"
 
         # 显示其他命令
@@ -307,7 +342,12 @@ async def handle_help(bot: Bot, event: GroupMessageEvent, matcher: Matcher, args
             help_text += LangManager.get(lang, "help_other_section") + "\n"
             for cmd_name, desc in other_cmds.items():
                 usage = desc.split("，用法:")[1] if "，用法:" in desc else desc
-                help_text += LangManager.get(lang, "help_cmd_format", cmd_name=cmd_name, usage=usage) + "\n"
+                help_text += (
+                    LangManager.get(
+                        lang, "help_cmd_format", cmd_name=cmd_name, usage=usage
+                    )
+                    + "\n"
+                )
             help_text += "\n"
 
         help_text += LangManager.get(lang, "help_tip")
