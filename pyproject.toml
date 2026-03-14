@@ -1,6 +1,6 @@
 [project]
 name = "nonebot-plugin-icey"
-version = "0.1.4"
+version = "0.1.5"
 description = "Icey QQ群管助手"
 readme = "README.md"
 requires-python = ">=3.9, <4.0"
