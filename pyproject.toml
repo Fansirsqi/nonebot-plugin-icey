@@ -159,7 +159,7 @@ typeCheckingMode = "standard"
 
 [tool.bumpversion]
 # commit_args = "--no-verify" 
-current_version = "0.1.4"
+current_version = "0.1.5"
 commit = true
 message = "release: bump version from {current_version} to {new_version}"
 tag = true
