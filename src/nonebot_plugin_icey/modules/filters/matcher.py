@@ -86,6 +86,7 @@ async def _(bot: Bot, event: GroupMessageEvent, args: Message = CommandArg()):
     count = 0
     for t in triggers:
         await add_filter(gid, t, final_content, final_type, at_user_id)
+        logger.debug(f"Saved filter: |{t}| -> |{final_content}|")
         count += 1
 
     await cmd_filter.finish(f"Saved {count} filter(s).")
